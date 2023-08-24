@@ -9,7 +9,7 @@ class Solution {
     int[] sell = new int[n];
     
     buy[0] = -prices[0];
-    sell[0] = 0;
+    //sell[0] = 0;
     
     for (int i = 1; i < n; i++) {
         buy[i] = Math.max(buy[i - 1], sell[i - 1] - prices[i]);
