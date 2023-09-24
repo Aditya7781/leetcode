@@ -1,22 +1,37 @@
 class Solution {
-public double champagneTower(int poured, int queryRow, int queryGlass) {
-	if (poured == 0)
-		return 0;
-	
-	var prevRow = new ArrayList<>(List.of((double) poured));
+    Double dp[][];
 
-	while (queryRow-- > 0) {
-		var champagneInEnds = Math.max(0, (prevRow.get(0) - 1) / 2); 
-		var currentRow = new ArrayList<>(List.of(champagneInEnds)); 
+    public double champagneTower(int poured, int query_row, int query_glass) {
+        dp = new Double[query_row + 1][query_row + 1];
 
-		for (var i = 1; i < prevRow.size(); i++)
-			currentRow.add(Math.max(0, (prevRow.get(i - 1) - 1) / 2) + 
-						   Math.max(0, (prevRow.get(i) - 1) / 2));     
+        double champagneAmount = getChampagne(poured, query_row, query_glass);
+        return champagneAmount > 1 ? 1 : champagneAmount;
+    }
 
-		currentRow.add(champagneInEnds); 
-		prevRow = currentRow;
-	}
-	
-	return Math.min(1, prevRow.get(queryGlass)); 
-}
+    private double getChampagne(int poured, int row, int col) {
+        if (row < col || col < 0 || row < 0) {
+            return 0;
+        }
+
+        if (row == 0 && col == 0) {
+            return poured;
+        }
+
+        if (dp[row][col] != null) {
+            return dp[row][col];
+        }
+
+        double leftTop = (getChampagne(poured, row - 1, col - 1) - 1) / 2.0;
+        double rightTop = (getChampagne(poured, row - 1, col) - 1) / 2.0;
+
+        if (leftTop < 0) {
+            leftTop = 0;
+        }
+
+        if (rightTop < 0) {
+            rightTop = 0;
+        }
+
+        return dp[row][col] = leftTop + rightTop;
+    }
 }
