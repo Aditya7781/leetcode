@@ -1,37 +1,27 @@
 class Solution {
-    Double dp[][];
-
     public double champagneTower(int poured, int query_row, int query_glass) {
-        dp = new Double[query_row + 1][query_row + 1];
+        double[] cup = new double[query_row + 2];
 
-        double champagneAmount = getChampagne(poured, query_row, query_glass);
-        return champagneAmount > 1 ? 1 : champagneAmount;
-    }
+        cup[0] = (double)poured;
 
-    private double getChampagne(int poured, int row, int col) {
-        if (row < col || col < 0 || row < 0) {
-            return 0;
+
+        for(int i = 0; i < query_row; ++i){
+            for(int j = i; j >= 0; --j){
+                double spill = (cup[j] - 1) / 2;
+                if(spill > 0){
+                    cup[j] = spill;
+                    cup[j+1] += spill;
+                } else {
+                    cup[j] = 0;
+                    cup[j+1] += 0;
+                }
+            }
         }
 
-        if (row == 0 && col == 0) {
-            return poured;
+        if(cup[query_glass] > 1){
+            return 1;
+        } else{
+            return cup[query_glass];
         }
-
-        if (dp[row][col] != null) {
-            return dp[row][col];
-        }
-
-        double leftTop = (getChampagne(poured, row - 1, col - 1) - 1) / 2.0;
-        double rightTop = (getChampagne(poured, row - 1, col) - 1) / 2.0;
-
-        if (leftTop < 0) {
-            leftTop = 0;
-        }
-
-        if (rightTop < 0) {
-            rightTop = 0;
-        }
-
-        return dp[row][col] = leftTop + rightTop;
     }
 }
