@@ -15,35 +15,22 @@
  */
 class Solution {
     public boolean isCompleteTree(TreeNode root) {
-       if(root==null){
-           return true;
-       }
-        Queue<TreeNode> queue = new ArrayDeque<>();
-        queue.add(root);
+        return dfs(root, 0, countNodes(root));
+    }
+      
+    public boolean dfs(TreeNode node, int index, int n) {
+        if (node == null) return true;
+        if (index >= n) return false;
         
-        TreeNode front;
-        
-        boolean flag = false;
-        
-        while(!queue.isEmpty()){
-            front = queue.poll();
-            if (flag && (front.left != null || front.right != null)) {
-                return false;
-            }
-             if (front.left == null && front.right != null) {
-                return false;
-            }
-             if (front.left != null) {
-                queue.add(front.left);
-            } else {
-                flag = true;
-            }
-            if (front.right != null) {
-                queue.add(front.right);
-            } else {
-                flag = true;
-            }
+        return dfs(node.left, 2 * index + 1, n) &&
+            dfs(node.right, 2 * index + 2, n);
+    }
+    
+    public int countNodes(TreeNode root) {
+        if (root == null) {
+            return 0;
         }
-        return true;
+        
+        return 1 + countNodes(root.left) + countNodes(root.right);
     }
 }
