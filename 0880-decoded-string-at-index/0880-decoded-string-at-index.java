@@ -1,34 +1,32 @@
-class Solution {
-    public String decodeAtIndex(String encodedString, int k) {
-        Stack<Long> characterLengths = new Stack<>(); 
-        characterLengths.push(0L); 
-        for (int i = 0; i < encodedString.length(); i++) {
-            char c = encodedString.charAt(i);
-            if (Character.isDigit(c)) {
-              
-                long length = characterLengths.peek() * (c - '0');
-                characterLengths.push(length);
+public class Solution {
+    public String decodeAtIndex(String s, int k) {
+        long size = 0;
+        int n = s.length();
+
+        // Calculate the size of the decoded string
+        for (int i = 0; i < n; i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                size *= s.charAt(i) - '0';
             } else {
-               
-                long length = characterLengths.peek() + 1;
-                characterLengths.push(length);
+                size++;
             }
         }
 
-       
-        int ln = characterLengths.size();
-        while (!characterLengths.isEmpty()) {
-            k %= characterLengths.peek(); 
-            ln--;
-            
-            if (k == 0 && Character.isLetter(encodedString.charAt(ln - 1))) {
-                return String.valueOf(encodedString.charAt(ln - 1));
+        // Start decoding from the end of the string
+        for (int i = n - 1; i >= 0; i--) {
+            k = (int)(k % size);
+
+            if (k == 0 && Character.isLetter(s.charAt(i))) {
+                return String.valueOf(s.charAt(i));
             }
 
-           
-            characterLengths.pop();
+            if (Character.isDigit(s.charAt(i))) {
+                size /= s.charAt(i) - '0';
+            } else {
+                size--;
+            }
         }
 
-        return ""; 
+        return "";
     }
 }
