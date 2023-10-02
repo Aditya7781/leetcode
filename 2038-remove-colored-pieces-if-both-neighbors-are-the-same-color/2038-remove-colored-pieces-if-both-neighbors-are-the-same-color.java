@@ -1,18 +1,27 @@
 class Solution {
     public boolean winnerOfGame(String colors) {
-        int n = colors.length();
-        int aliceWins = 0, bobWins = 0;
-        for (int i = 1; i < n - 1; ++i) {
-            if (colors.charAt(i - 1) == 'A' && colors.charAt(i) == 'A' && colors.charAt(i + 1) == 'A') {
-                aliceWins++;
-            } else if (colors.charAt(i - 1) == 'B' && colors.charAt(i) == 'B' && colors.charAt(i + 1) == 'B') {
-                bobWins++;
+        int aCnt=0,bCnt=0;
+        int aTemp=0,bTemp=0;
+        for(char c : colors.toCharArray()){
+            if(c=='A'){
+                bTemp=0;
+                aTemp++;
+                if(aTemp>=3){
+                    aCnt++;
+                }
+            }
+            else{
+                aTemp=0;
+                bTemp++;
+                if(bTemp>=3){
+                    bCnt++;
+                }
             }
         }
-        if (aliceWins > bobWins) {
+        if(aCnt>bCnt)
             return true;
-        }
-        
+        else
         return false;
+        
     }
 }
