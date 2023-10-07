@@ -1,29 +1,39 @@
 class Solution {
     public int numOfArrays(int n, int m, int k) {
-        long[][][] dp = new long[n][k][m];
-        long mod = 1000000007;
-        Arrays.fill(dp[0][0], 1);
+        long[][] dp = new long[m + 1][k + 1];
+        long[][] prefix = new long[m + 1][k + 1];
+        long[][] prevDp = new long[m + 1][k + 1];
+        long[][] prevPrefix = new long[m + 1][k + 1];
+        int MOD = (int) 1e9 + 7;
         
-        for (int i = 1; i < n; i++) {
-            for (int cost = 0; cost < Math.min(i + 1, k); cost++) {
-                for (int max = 0; max < m; max++) {
-                    dp[i][cost][max] = (dp[i][cost][max] + (max + 1) * dp[i - 1][cost][max]) % mod;
-                    if (cost != 0) {
-                        long sum = 0;
-                        for (int prevMax = 0; prevMax < max; prevMax++) {
-                            sum += dp[i - 1][cost - 1][prevMax];
-                            sum %= mod;
-                        }
-                        dp[i][cost][max] = (dp[i][cost][max] + sum) % mod;
-                    }
+        for (int num = 1; num <= m; num++) {
+            dp[num][1] = 1;
+        }
+        
+        for (int i = 1; i <= n; i++) {
+            if (i > 1) {
+                dp = new long[m + 1][k + 1];
+            }
+            
+            prefix = new long[m + 1][k + 1];
+            
+            for (int maxNum = 1; maxNum <= m; maxNum++) {
+                for (int cost = 1; cost <= k; cost++) {
+                    long ans = (maxNum * prevDp[maxNum][cost]) % MOD;
+                    ans = (ans + prevPrefix[maxNum - 1][cost - 1]) % MOD;
+
+                    dp[maxNum][cost] += ans;
+                    dp[maxNum][cost] %= MOD;
+                    
+                    prefix[maxNum][cost] = (prefix[maxNum - 1][cost] + dp[maxNum][cost]);
+                    prefix[maxNum][cost] %= MOD;
                 }
             }
+            
+            prevDp = dp;
+            prevPrefix = prefix;
         }
-        long ans = 0;
-        for (int max = 0; max < m; max++) {
-            ans += dp[n - 1][k - 1][max];
-            ans %= mod;
-        }
-        return (int) ans;
+        
+        return (int) prefix[m][k];
     }
 }
