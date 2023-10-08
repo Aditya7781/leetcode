@@ -1,30 +1,42 @@
-class Solution {
-    public int fun(int[] arr1,int[] arr2,int n,int m,int[][] dp,int i,int j){
-        if(i==n || j==m)
-            return 0;
-        if(dp[i][j]!=-1)
-            return dp[i][j];
-        int skipI = fun(arr1,arr2,n,m,dp,i+1,j); 
-        int skipJ = fun(arr1,arr2,n,m,dp,i,j+1);
-        int pickIJ = (arr1[i]*arr2[j]) + fun(arr1,arr2,n,m,dp,i+1,j+1);
-        return dp[i][j] = Math.max(pickIJ,Math.max(skipI,skipJ));
-    }
+class Solution {    
     public int maxDotProduct(int[] nums1, int[] nums2) {
-        int n = nums1.length;
-        int m = nums2.length;
-        int[][] dp = new int[n][m];
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++)
-                dp[i][j] = -1;
+        int firstMax = Integer.MIN_VALUE;
+        int secondMax = Integer.MIN_VALUE;
+        int firstMin = Integer.MAX_VALUE;
+        int secondMin = Integer.MAX_VALUE;
+        
+        for (int num: nums1) {
+            firstMax = Math.max(firstMax, num);
+            firstMin = Math.min(firstMin, num);
         }
-        int ans = Integer.MIN_VALUE;
-        for(int i=0; i<n; i++){
-            for(int j=0; j<m; j++)
-                ans = Math.max(ans,nums1[i]*nums2[j]);
+        
+        for (int num: nums2) {
+            secondMax = Math.max(secondMax, num);
+            secondMin = Math.min(secondMin, num);
         }
-        int answer = fun(nums1,nums2,n,m,dp,0,0);
-        if(answer==0)
-            return ans;
-        return answer;
+        
+        if (firstMax < 0 && secondMin > 0) {
+            return firstMax * secondMin;
+        }
+        
+        if (firstMin > 0 && secondMax < 0) {
+            return firstMin * secondMax;
+        }
+        
+        int m = nums2.length + 1;
+        int[] dp = new int[m];
+        int[] prevDp = new int[m];
+        
+        for (int i = nums1.length - 1; i >= 0; i--) {
+            dp = new int[m];
+            for (int j = nums2.length - 1; j >= 0; j--) {
+                int use = nums1[i] * nums2[j] + prevDp[j + 1];
+                dp[j] = Math.max(use, Math.max(prevDp[j], dp[j + 1]));
+            }
+            
+            prevDp = dp;
+        }
+        
+        return dp[0];
     }
 }
