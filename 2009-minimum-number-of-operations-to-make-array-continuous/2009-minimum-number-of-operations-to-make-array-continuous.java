@@ -1,29 +1,22 @@
 class Solution {
-    public int minOperations(int[] A) {
-        int n = A.length;
-        int ans = n;
-        HashSet<Integer> hashSet = new HashSet<>();
-        for (int x : A) {
-            hashSet.add(x);
-        }
-        int[] unique = new int[hashSet.size()];
-        int i = 0;
-        
-        for (int x : hashSet) {
-            unique[i++] = x;
-        }
-            
-        Arrays.sort(unique);
-        
+    public int minOperations(int[] nums) {
+        int N = nums.length;
+        int ans = N;
         int j = 0;
-        int m = unique.length;
-        for (i = 0; i < m; i++) {
-            while (j < m && unique[j] < unique[i] + n) {
-                j++;
+        Arrays.sort(nums);
+        int M = 1;
+        for (int i = 1; i < N; ++i) {
+            if (nums[i] != nums[i - 1]) {
+                nums[M] = nums[i];
+                M++;
             }
-            ans = Math.min(ans, n - j + i);
         }
-        
+        for (int i = 0; i < M; ++i) {
+            while (j < M && nums[j] < nums[i] + N) {
+                ++j;
+            }
+            ans = Math.min(ans, N - j + i);
+        }
         return ans;
     }
 }
