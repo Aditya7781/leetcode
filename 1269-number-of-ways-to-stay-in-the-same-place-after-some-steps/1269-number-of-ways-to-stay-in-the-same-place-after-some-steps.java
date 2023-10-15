@@ -1,21 +1,30 @@
 class Solution {
-    static int max_len,MOD=1000000007;
-    public static long calc(int idx,int steps,HashMap<String,Long> map){
-       String str=idx+" --> "+steps;
-       if(idx==0 && steps==0) return 1;
-       if(idx==max_len || idx<0 || steps<=0) return 0;
-       if(map.containsKey(str)) return map.get(str);
-       long c1=calc(idx+1,steps-1,map)%MOD;
-       long c2=calc(idx-1,steps-1,map)%MOD;
-       long c3=calc(idx,steps-1,map)%MOD;
-       long val=(c1+c2+c3)%MOD;
-       map.put(str,val);
-       return map.get(str);
-    }
-    
     public int numWays(int steps, int arrLen) {
-        HashMap<String,Long> map = new HashMap<>();
-        max_len=arrLen; 
-        return (int)calc(0,steps,map)%MOD;
+        if (arrLen == 1) {
+            return 1;
+        }
+        
+        arrLen = Math.min(steps / 2 + 1, arrLen);
+        long modulo = 1_000_000_007;
+
+        long[] current = new long[arrLen];
+        current[0] = 1;
+        current[1] = 1;
+        long[] next = new long[arrLen];
+
+        for (int i = 2; i <= steps; i++) {
+            int maxPos = Math.min(i + 1, arrLen);
+            next[0] = (current[0] + current[1]) % modulo;
+            for (int j = 1; j < maxPos - 1; j++) {
+                next[j] = (current[j - 1] + current[j] + current[j + 1]) % modulo;
+            }
+            next[maxPos - 1] = (current[maxPos - 2] + current[maxPos - 1]) % modulo;
+
+            long[] temp = current;
+            current = next;
+            next = temp;
+        }
+
+        return (int) current[0];
     }
 }
