@@ -1,45 +1,56 @@
 class Solution {
     public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
-        Set<Integer> uniqueNode = new HashSet();
-        for(int left : leftChild){
-            if(left!=-1)
-                uniqueNode.add(left);
+        
+           UnionFind uf = new UnionFind(n);
+
+           for(int i=0;i<n;i++){
+               if(leftChild[i] >= 0 && !uf.union(i,leftChild[i])){
+                   return false;
+               }
+               if(rightChild[i] >= 0 && !uf.union(i,rightChild[i])){
+                   return false;
+               }
+           }
+               return uf.components() == 1;
+    }
+}
+
+   class UnionFind {
+    private final int n;
+    private final int[] roots;
+    private int components;
+    
+    UnionFind (int n) {
+        this.n = n;
+        roots = new int[n];
+        for (int i = 0; i < n; i++) {
+            roots[i] = i;
         }
-        for(int right : rightChild){
-            if(right!=-1)
-                uniqueNode.add(right);
-        }
-        int rootNode = -1;
-        for(int i=0; i<n; i++){
-            if(uniqueNode.contains(i))
-                continue;
-            rootNode = i;
-            break;
-        }
-        if(rootNode==-1){
-            return false;
-        }
-        Queue<Integer> queue = new LinkedList();
-        Set<Integer> visitedSet = new HashSet();
-        queue.add(rootNode);
-        while(!queue.isEmpty()){
-            int size = queue.size();
-            while(size>0){
-                int node = queue.poll();
-                if(visitedSet.contains(node))
-                    return false;
-                visitedSet.add(node);
-                if(leftChild[node]!=-1){
-                    queue.add(leftChild[node]);
-                }
-                if(rightChild[node]!=-1){
-                    queue.add(rightChild[node]);
-                }
-                size--;
-            }
-        }
-        return visitedSet.size()==n;
+        components = n;
     }
 
+        public boolean union(int parent ,int child){
+            int rootparent = findRoot(parent);
+            int rootchild  = findRoot(child);
 
-}
+            if(rootparent == rootchild || rootchild != child){
+                return false;
+            }
+
+            roots[rootchild] = rootparent;
+            components--;
+            return true;
+        }
+
+        private int findRoot(int v){
+
+            while(v != roots[v]){
+                roots[v] = roots[roots[v]];
+                v = roots[v];
+            }
+            return v;
+        }
+        public int components(){
+            return components;
+        }
+    }
