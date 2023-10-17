@@ -1,56 +1,51 @@
 class Solution {
     public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
-        
-           UnionFind uf = new UnionFind(n);
 
-           for(int i=0;i<n;i++){
-               if(leftChild[i] >= 0 && !uf.union(i,leftChild[i])){
-                   return false;
-               }
-               if(rightChild[i] >= 0 && !uf.union(i,rightChild[i])){
-                   return false;
-               }
-           }
-               return uf.components() == 1;
+    int[] inDegree = new int[n];
+    int root = -1;
+
+    // If inDegree of any node > 1, return false
+    for (final int child : leftChild)
+      if (child != -1 && ++inDegree[child] == 2)
+        return false;
+
+    for (final int child : rightChild)
+      if (child != -1 && ++inDegree[child] == 2)
+        return false;
+
+    // Find the root (node with inDegree == 0)
+    for (int i = 0; i < n; ++i)
+      if (inDegree[i] == 0)
+        if (root == -1)
+          root = i;
+        else
+          return false; // Multiple roots
+
+    // didn't find the root
+    if (root == -1)
+      return false;
+
+    // Perform DFS from the root
+        boolean[] visited = new boolean[n];
+        if(!dfs(root, leftChild, rightChild, visited)) return false;
+
+        //Return false if there exists any node that cannot be reached from the root.
+        for(boolean v: visited) if(!v) return false;
+        return true;
+    }
+
+    private boolean dfs(int source, int[] leftChild, int[] rightChild, boolean[] visited) {
+        visited[source] = true;
+        int left = leftChild[source], right = rightChild[source];
+        
+        if(left >= 0) {
+            if(visited[left] || !dfs(left, leftChild, rightChild, visited)) return false;
+        }
+
+        if(right >= 0) {
+            if(visited[right] || !dfs(right, leftChild, rightChild, visited)) return false;
+        }
+
+        return true;
     }
 }
-
-   class UnionFind {
-    private final int n;
-    private final int[] roots;
-    private int components;
-    
-    UnionFind (int n) {
-        this.n = n;
-        roots = new int[n];
-        for (int i = 0; i < n; i++) {
-            roots[i] = i;
-        }
-        components = n;
-    }
-
-        public boolean union(int parent ,int child){
-            int rootparent = findRoot(parent);
-            int rootchild  = findRoot(child);
-
-            if(rootparent == rootchild || rootchild != child){
-                return false;
-            }
-
-            roots[rootchild] = rootparent;
-            components--;
-            return true;
-        }
-
-        private int findRoot(int v){
-
-            while(v != roots[v]){
-                roots[v] = roots[roots[v]];
-                v = roots[v];
-            }
-            return v;
-        }
-        public int components(){
-            return components;
-        }
-    }
