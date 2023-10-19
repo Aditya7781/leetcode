@@ -1,30 +1,27 @@
-import java.util.Stack;
-
 class Solution {
-    public String convert(String s) {
-        Stack<Character> stack = new Stack<>();
+    public boolean backspaceCompare(String s, String t) {
+        s=findback(s);
+        t=findback(t);
 
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '#') {
-                if (!stack.isEmpty()) {
-                    stack.pop();
-                }
-            } else {
-                stack.push(s.charAt(i));
+        return s.equals(t);
+    
+    }
+    private String findback(String s){
+        StringBuilder sb=new StringBuilder();
+        int count=0;
+        for(int i=s.length()-1;i>=0;i--){
+            if(s.charAt(i)=='#'){
+                count++;
+            }
+            else if(count!=0){
+                count--;
+            }
+            else{
+                sb.append(s.charAt(i));
             }
         }
+        return sb.toString();
 
-        StringBuilder result = new StringBuilder();
-        while (!stack.isEmpty()) {
-            result.append(stack.pop());
-        }
 
-        return result.toString();
-    }
-
-    public boolean backspaceCompare(String s, String t) {
-        String s1 = convert(s);
-        String s2 = convert(t);
-        return s1.equals(s2);
     }
 }
