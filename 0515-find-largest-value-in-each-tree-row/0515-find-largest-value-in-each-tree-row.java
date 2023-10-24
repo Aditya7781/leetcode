@@ -13,27 +13,40 @@
  *     }
  * }
  */
+
+import java.util.AbstractList; 
 class Solution {
+    private List<Integer> res; 
     public List<Integer> largestValues(TreeNode root) {
-        List<Integer> maxLevelVal = new ArrayList<>();
-        if(root == null)return maxLevelVal;
-        Deque<TreeNode> levelQueue = new ArrayDeque<>();
-        levelQueue.offerLast(root);
-        while(!levelQueue.isEmpty()){
-            int sz = levelQueue.size();
-            int maxValNode = Integer.MIN_VALUE;
-            while(sz-->0){
-                TreeNode currNode = levelQueue.pollFirst();
-                maxValNode = Math.max(currNode.val, maxValNode);
-                if(currNode.left != null){
-                    levelQueue.offerLast(currNode.left);
-                }
-                if(currNode.right != null){
-                    levelQueue.offerLast(currNode.right);
-                }
+        return new AbstractList<Integer>() {
+            @Override 
+            public Integer get(int index) {
+                init(); 
+                return res.get(index); 
             }
-            maxLevelVal.add(maxValNode);
+            @Override 
+            public int size() {
+                init(); 
+                return res.size(); 
+            }
+            protected void init() {
+                if (res != null)
+                    return; 
+                res = new ArrayList<Integer>(); 
+                dfsHelper(root, -1); 
+            }
+        }; 
+    }
+    private void dfsHelper(TreeNode root, int parentDepth) {
+        if (root == null)
+            return; 
+        ++parentDepth;
+        if (res.size() == parentDepth) {
+            res.add(root.val); 
+        } else {
+            res.set(parentDepth, Math.max(root.val, res.get(parentDepth)));
         }
-        return maxLevelVal;
+        dfsHelper(root.left, parentDepth); 
+        dfsHelper(root.right, parentDepth); 
     }
 }
