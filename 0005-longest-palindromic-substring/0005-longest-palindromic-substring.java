@@ -1,38 +1,34 @@
 class Solution {
+    int start = -1;
+    int length = 0;
     public String longestPalindrome(String s) {
-        StringBuilder sb = new StringBuilder();
-        for (char c : s.toCharArray()) sb.append(c);
-        String str = sb.reverse().toString();
-        return LCSubstring(s, str);
+        this.start = -1;
+        this.length = 0;
+        explore(s, s.length() / 2, 0);
+        return this.start == -1 ? null : s.substring(this.start, this.start + this.length);
     }
-    public String LCSubstring(String a, String b) {
-        String ans = "";
-        int res = 0;
-        int[][] dp = new int[a.length() + 1][b.length() + 1];
-        for (int i = 0; i < a.length() + 1; i++) {
-            for (int j = 0; j < b.length() + 1; j++) {
-                if (i == 0 || j == 0) dp[i][j] = 0;
-            }
+
+    public void explore(String s, int index, int direction) {
+        int i = index - 1;
+        int j = index + 1;
+        while (i >= 0 && s.charAt(i) == s.charAt(index))
+            i--;
+        while (j < s.length() && s.charAt(j) == s.charAt(index))
+            j++;
+        int l = i;
+        int r = j;
+        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+            l--;
+            r++;
         }
-        for (int i = 1; i < a.length() + 1; i++) {
-            for (int j = 1; j < b.length() + 1; j++) {
-                if (a.charAt(i - 1) == b.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                    //Important From Here
-                    if (dp[i][j] > res) {
-                        String temp = a.substring(i - dp[i][j], i);
-                        StringBuilder sb = new StringBuilder(temp);
-                        sb.reverse();
-                        String reversed = sb.toString();
-                        if (temp.equals(reversed)) {
-                            ans = temp;
-                            res = dp[i][j];
-                        }
-                    }
-                    //To Here
-                } else dp[i][j] = 0;
-            }
+        l++;
+        if (r - l > length) {
+            this.length = r - l;
+            this.start = l;
         }
-        return ans;
+        if (direction != 2 && 2 * (i + 1) > this.length)
+            explore(s, i, 1);
+        if (direction != 1 && 2 * (s.length() - j) > this.length)
+            explore(s, j, 2);
     }
 }
