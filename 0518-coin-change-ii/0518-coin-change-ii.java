@@ -1,14 +1,22 @@
 public class Solution {
-    public int change(int amount, int[] coins) {
-        int[] dp = new int[amount + 1];
-        dp[0] = 1;
-        
-        for (int coin : coins) {
-            for (int j = coin; j <= amount; j++) {
-                dp[j] += dp[j - coin];
+    public int change(int sum, int[] coins) {
+        int N = coins.length;
+        int[][] dp = new int[N + 1][sum + 1];
+
+        for (int i = 0; i <= N; i++) {
+            dp[i][0] = 1;
+        }
+
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= sum; j++) {
+                if (coins[i - 1] <= j) {
+                    dp[i][j] = dp[i][j - coins[i - 1]] + dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
             }
         }
-        
-        return dp[amount];
+
+        return dp[N][sum];
     }
 }
