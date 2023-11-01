@@ -14,41 +14,64 @@
  * }
  */
 class Solution {
-    Map<Integer, Integer> map;
+    
+    int max=0;
+    int count=0;
+    int temp=-1;
+
     public int[] findMode(TreeNode root) {
-        map = new HashMap<>();
-        searchInBST(root);
-        int maxFreq = -1;
-        List<Integer> list = new ArrayList<>();
-        for (int key : map.keySet()) {
-            int freq = map.get(key);
-            if (maxFreq < freq) {
-                maxFreq = freq;
-                list.clear();
-                list.add(key);
-                continue;
-            }
-            if (maxFreq == freq) {
-                list.add(key);
-            }
+        
+        List<Integer> list=new ArrayList<>();
+
+        sol(root,list);
+
+        int res[]=new int[list.size()];
+        int i=0;
+
+        for(Integer num : list)
+        {
+            res[i++]=num;
         }
-        int[] res = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            res[i] = list.get(i);
-        }
+
         return res;
     }
 
-    private void searchInBST(TreeNode node) {
-        if (node == null) return;
-
-        if (map.containsKey(node.val)) {
-            map.put(node.val, map.get(node.val) + 1);
-        } else {
-            map.put(node.val, 1);
+    public void sol(TreeNode root,List<Integer> list)
+    {
+        if(root==null)
+        {
+            return;
         }
 
-        searchInBST(node.left);
-        searchInBST(node.right);
+        sol(root.left,list);
+
+        if(count==0 || root.val==temp)
+        {
+            temp=root.val;
+            count++;
+
+            if(count>max)
+            {
+                max=count;
+                list.clear();
+                list.add(root.val);
+            }
+            else if(count==max)
+            {
+                list.add(root.val);
+            }
+        }
+        else
+        {
+            count=1;
+            temp=root.val;
+
+            if(count==max)
+            {
+                list.add(root.val);
+            }
+        }
+
+        sol(root.right,list);
     }
 }
