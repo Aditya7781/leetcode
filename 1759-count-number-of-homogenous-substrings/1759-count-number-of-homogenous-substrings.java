@@ -1,19 +1,25 @@
 class Solution {
     public int countHomogenous(String s) {
-        final int MOD = 1000000007;
-        int count = 1;
-        int consecutive = 1;
-
-        for (int i = 1; i < s.length(); i++) {
-            if (s.charAt(i) == s.charAt(i - 1)) {
-                consecutive++;
-            } else {
-                consecutive = 1;
+        long res = 0;
+        char[] c = s.toCharArray();
+        int start = 0;
+        for(int i=0; i<c.length; i++){
+            if(c[i] != c[start]){
+                int appear = i-start;
+                while(appear>0){
+                    res+=appear;
+                    appear--;
+                }
+                start = i;
             }
-
-            count = (count + consecutive) % MOD;
         }
 
-        return count;
+        int appear = c.length-start;
+        while(appear>0){
+            res+=appear;
+            appear--;
+        }
+
+        return (int)(res % (Math.pow(10, 9) + 7));
     }
 }
