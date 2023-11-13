@@ -1,41 +1,32 @@
-class Solution 
-{
-    
-    public static boolean cheak(char s)
-    {
-        
-        return (s== 'A' ||s== 'E' ||s== 'I'||s== 'O' ||s== 'U' ||s== 'a' || s== 'e' || s== 'i' ||s== 'o' || s== 'u');
-      
-    }
-    
-    
-    public String sortVowels(String s) 
-    {
-        ArrayList<Character> vowel = new ArrayList<>();     
-        
-        for(char i : s.toCharArray() )
-        {
-            if(cheak(i))
-            {
-                vowel.add(i);
-            }
+public class Solution {
+    public String sortVowels(String s) {
+        int[] vowelCount = new int[11];
+        int[] countIndexMap = new int[128];
+        char[] result = s.toCharArray();
+        char[] charMap = "AEIOUaeiou".toCharArray();
 
-        }            
-         Collections.sort(vowel);
-        
-         // System.out.println(vowel);
-        
-        
-      String p="";
-        int index=0;
-        
-         for(int i=0 ; i<s.length() ; i++ )
-        {
-            if(cheak(s.charAt(i))) p += vowel.get(index++);
-            else p+=(s.charAt(i));
+        for (int i = 0; i < charMap.length; i++) 
+            countIndexMap[charMap[i]] = i + 1;
+
+        for (char c : result) 
+            vowelCount[countIndexMap[c]]++;
+        int j = 1;
+        int i = 0;
+
+        while (j < vowelCount.length) {
+            if (vowelCount[j] > 0)
+                while (i < result.length) {
+                    if (countIndexMap[result[i]] == 0) {
+                        i++;
+                        continue;
+                    }
+                    vowelCount[j]--;
+                    result[i++] = charMap[j - 1];
+                    break;
+                }
+            else
+                j++;  
         }
-        
-  
-            return p;
+        return new String(result);
     }
 }
