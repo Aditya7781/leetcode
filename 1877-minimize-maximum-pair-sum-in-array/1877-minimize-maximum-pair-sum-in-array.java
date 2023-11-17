@@ -1,26 +1,43 @@
 class Solution {
     public int minPairSum(int[] nums) {
-        int max = Integer.MIN_VALUE;
-        int min = Integer.MAX_VALUE;
-        int hash[] = new int[100001];
-        for(int num : nums) {
-            hash[num]++;
-            max = Math.max(max, num);
-            min = Math.min(min, num);
+        
+        int max=Integer.MIN_VALUE;
+        int sum=0;
+        for(int i:nums)
+        {
+            max=Math.max(max,i);
         }
-
-        int low = min;
-        int high = max;
-        max = Integer.MIN_VALUE;
-        while(low <= high) {
-            if(hash[low] == 0) low++;
-            else if(hash[high] == 0) high--;
-            else {
-                max = Math.max(max, low + high);
-                hash[low]--;
-                hash[high]--;
+        int l=1;
+        int r=max;
+        int buc[]=new int[max+1];
+        for(int i:nums)
+        {
+            buc[i]++;
+        }
+        while(l<=r)
+        {
+            while(buc[l]==0)
+            {l++;}
+            while(buc[r]==0)
+            {r--;}
+            sum=Math.max(sum,l+r);
+            
+            if(buc[l]>buc[r])
+            {
+                buc[l]=buc[l]-buc[r];
+                r--;
+            }
+            else if(buc[l]<buc[r])
+            {
+                buc[r]=buc[r]-buc[l];
+                l++;
+            }
+            else
+            {
+                l++;
+                r--;
             }
         }
-        return max;
+        return sum;
     }
 }
