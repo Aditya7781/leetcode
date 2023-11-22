@@ -1,23 +1,55 @@
 class Solution {
     public int[] findDiagonalOrder(List<List<Integer>> nums) {
-        int m = nums.size(), maxSum = 0, size = 0, index = 0;
-        List<Integer>[] map = new ArrayList[100001];
-        for (int i = 0; i < m; i++) {
-            size += nums.get(i).size();
-            for (int j = 0; j < nums.get(i).size(); j++) {
-                int sum = i + j;
-                if (map[sum] == null) map[sum] = new ArrayList<>();
-                map[sum].add(nums.get(i).get(j));
-                maxSum = Math.max(maxSum, sum);
+       if (nums.size() == 1) {
+            List<Integer> list = nums.get(0);
+            int[] a = new int[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                a[i] = list.get(i);
+            }
+            return a;
+        }
+        int[] previousRow = new int[nums.size()];
+        int size = 0;
+        int max = 0;
+        int i = 0;
+        previousRow[0] = -1;
+        for (List<Integer> num : nums) {
+            size += num.size();
+            max = Math.max(max, num.size());
+            if (i > 0) {
+                if (nums.get(i - 1).size() > 1) {
+                    previousRow[i] = i - 1;
+                } else {
+                    previousRow[i] = previousRow[i - 1];
+                }
+            }
+            i++;
+        }
+
+        int[] result = new int[size];
+        int n = nums.size();
+        int m = max;
+
+        int idx = 0;
+        result[idx++] = nums.get(0).get(0);
+
+        for (int rowIdx = 1; rowIdx < n + m - 1; rowIdx++) {
+            int r = rowIdx < n ? rowIdx : n - 1;
+            int diff = rowIdx < n ? 0 : rowIdx + 1 - n;
+            int c = 0 + diff;
+
+            while (r >= 0 && c < m) {
+                List<Integer> row = nums.get(r);
+                if (row.size() > c) {
+                    result[idx++] = row.get(c);
+                }
+                int key = previousRow[r];
+                diff = r - key;
+                r = key;
+                c += diff;
             }
         }
-        int[] res = new int[size];
-        for (int i = 0; i <= maxSum; i++) {
-            List<Integer> cur = map[i];
-            for (int j = cur.size() - 1; j >= 0; j--) {
-                res[index++] = cur.get(j);
-            }
-        }
-        return res;
+
+        return result;
     }
 }
