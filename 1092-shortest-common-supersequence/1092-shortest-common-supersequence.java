@@ -1,41 +1,58 @@
 class Solution {
     public String shortestCommonSupersequence(String str1, String str2) {
-        char[] char1 = str1.toCharArray();
-        char[] char2 = str2.toCharArray();
+        int n = str1.length();
+        int m = str2.length();
 
-        int n=str1.length();
-        int m=str2.length();
+        int[][] t = new int[n + 1][m + 1];
 
-        int[][] dp = new int[n + 1][m + 1];
-        for (int i = n - 1; i >= 0; i--) {
-            for (int j = m - 1; j >= 0; j--) {
-                if (char1[i] == char2[j]) dp[i][j] = dp[i + 1][j + 1] + 1;
-                else dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                if (i == 0 || j == 0) {
+                    t[i][j] = 0;
+                }
             }
         }
-        StringBuilder sb = new StringBuilder();
-        int i=0, j=0;
-        while(i<n && j<m){
-            if(char1[i]==char2[j]){
-                sb.append(char1[i]); 
-                i++;
-                j++;
-            }else if(dp[i][j]==dp[i+1][j]){
-                sb.append(char1[i]); 
-                i++;
-            }else{
-                sb.append(char2[j]); 
-                j++;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                    t[i][j] = 1 + t[i - 1][j - 1];
+                } else {
+                    t[i][j] = Math.max(t[i - 1][j], t[i][j - 1]);
+                }
             }
         }
-        while(i<n){
-            sb.append(char1[i]); 
-            i++;
-        } 
-        while(j<m){
-            sb.append(char2[j]); 
-            j++;
-        }   
-        return sb.toString();
+
+        int i = n;
+        int j = m;
+        StringBuilder s = new StringBuilder();
+
+        while (i > 0 && j > 0) {
+            if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                s.append(str1.charAt(i - 1));
+                i--;
+                j--;
+            } else {
+                if (t[i - 1][j] < t[i][j - 1]) {
+                    s.append(str2.charAt(j - 1));
+                    j--;
+                } else {
+                    s.append(str1.charAt(i - 1));
+                    i--;
+                }
+            }
+        }
+
+        while (i > 0) {
+            s.append(str1.charAt(i - 1));
+            i--;
+        }
+
+        while (j > 0) {
+            s.append(str2.charAt(j - 1));
+            j--;
+        }
+
+        return s.reverse().toString();
     }
 }
