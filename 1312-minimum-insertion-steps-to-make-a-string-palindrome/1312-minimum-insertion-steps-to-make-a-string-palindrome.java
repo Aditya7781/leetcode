@@ -26,12 +26,12 @@ class Solution {
         int n = s.length();
         return LCS(s, r.toString(), n, n);
     }
-    int minDeletions(String str, int n) 
-    {
-        return n - LPS(str);
-    }
+    //int minDeletions(String str, int n) 
+    //{
+    //    return n - LPS(str);
+    //}
     public int minInsertions(String s) {
         int n = s.length();
-        return minDeletions(s, n);
+        return n - LPS(s);//no. of insertions is same as deletions
     }
 }
