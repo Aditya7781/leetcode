@@ -1,25 +1,28 @@
 class Solution {
     public int countCharacters(String[] words, String chars) {
-        int result = 0;
-        for (String word : words) {
-            if (canFormWord(word, chars)) {
-                result += word.length();
-            }
+        int[] counts = new int[26];
+        for(int i=0;i<chars.length();i++)
+        {
+            counts[chars.charAt(i)-'a']++;
         }
-        return result;
+        int res =0 ;
+        for(String s : words)
+        {
+            if(canForm(s,counts))
+                res+=s.length();
+        }
+        return res;
     }
 
-    private boolean canFormWord(String word, String chars) {
-        int[] charCount = new int[26];
-
-        for (char ch : chars.toCharArray()) {
-            charCount[ch - 'a']++;
-        }
-        for (char ch : word.toCharArray()) {
-            if (charCount[ch - 'a'] == 0) {
+    boolean canForm(String word, int[] counts)
+    {
+        int[] c = new int[26];
+        for(int i =0;i<word.length();i++)
+        {
+            int x = word.charAt(i)-'a';
+            c[x]++;
+            if(c[x] > counts[x])
                 return false;
-            }
-            charCount[ch - 'a']--;
         }
         return true;
     }
