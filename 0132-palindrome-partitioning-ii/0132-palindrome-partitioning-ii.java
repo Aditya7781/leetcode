@@ -1,63 +1,33 @@
 class Solution {
     public int minCut(String s) {
-        int n=s.length();
+        int n = s.length();
         
-        int dp[][]=new int[n+1][n+1];
-            for(int j[]:dp)
-                Arrays.fill(j,-1);
+        // dp[i] represents the minimum cuts needed for the substring s[0:i]
+        int[] dp = new int[n];
         
-        return helper(s,0,n,dp);
+        // Initialize dp array with worst-case values
+        for (int i = 0; i < n; i++) {
+            dp[i] = i;
+        }
+        
+        // Check for palindromes centered at each character and update dp array
+        for (int center = 0; center < n; center++) {
+            expandAroundCenter(s, center, center, dp);
+            expandAroundCenter(s, center, center + 1, dp);
+        }
+        
+        return dp[n - 1];
     }
-    
-     public int helper(String s,int i,int j,int dp[][])
-    {
-        if(i>j)
-            return 100000;
-        
-        if(i==j)
-            return 0;   
-          
-         
-         if(isPalin(s,i,j-1))
-         {
-            return 0;     
-         }
-        
-        
-        if(dp[i][j]!=-1)
-            return dp[i][j];
-        
-         int mc=Integer.MAX_VALUE;
-        for(int t=i;t<j;t++)
-        {
-         
-            if(isPalin(s,i,t))
-            {
-                mc=Math.min(1+ helper(s,t+1,j,dp),mc);
+
+    private void expandAroundCenter(String s, int left, int right, int[] dp) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            if (left == 0) {
+                dp[right] = 0;  // The whole substring is a palindrome
+            } else {
+                dp[right] = Math.min(dp[right], dp[left - 1] + 1);
             }
-            
+            left--;
+            right++;
         }
-        dp[i][j]= mc;
-        
-        return dp[i][j];
     }
- 
-    boolean isPalin(String s,int i,int j)
-    {
-        if(i>j)
-            return false;
-        
-        if(i==j)
-            return true;
-        
-        while(i<j)
-        {
-            if(s.charAt(i)!=s.charAt(j))
-                return false;
-            i++;
-            j--;
-        }
-        return true;
-    }
-    
 }
