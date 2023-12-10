@@ -1,31 +1,41 @@
 class Solution {
-    static HashMap<String, Boolean> ump = new HashMap<>();
-    static boolean isScramble(String X,String Y)
-    {
-        String key = X + " " + Y;
-        if (ump.containsKey(key))
-            return ump.get(key);
+    
+    Map<String, Boolean> map = new HashMap<>();
 
-        if (X.equals(Y)) {
-            ump.put(key, true);
+    public boolean isScramble(String s1, String s2) {
+        int n = s1.length();
+        
+        if (s1.equals(s2)) {
             return true;
         }
-        if (X.length() != Y.length()) { // Check if lengths are not equal
-            ump.put(key, false);
-            return false;
+        
+        int[] a = new int[26], b = new int[26], c = new int[26];
+        
+        if (map.containsKey(s1 + s2)) {
+            return map.get(s1 + s2);
         }
-
-        int n = X.length();
-        boolean flag = false;
+        
         for (int i = 1; i <= n - 1; i++) {
-            if ((isScramble(X.substring(0, i), Y.substring(n - i, n)) && isScramble(X.substring(i, n), Y.substring(0, n - i))) ||
-                (isScramble(X.substring(0, i), Y.substring(0, i)) && isScramble(X.substring(i, n), Y.substring(i, n)))) {
-                flag = true;
-                break;
+            int j = n - i;
+            
+            a[s1.charAt(i - 1) - 'a']++;
+            b[s2.charAt(i - 1) - 'a']++;
+            c[s2.charAt(j) - 'a']++;
+           
+            if (Arrays.equals(a, b) && isScramble(s1.substring(0, i), s2.substring(0, i)) && isScramble(s1.substring(i), s2.substring(i))) {
+              
+                map.put(s1 + s2, true);
+                return true;
+            }
+        
+            if (Arrays.equals(a, c) && isScramble(s1.substring(0, i), s2.substring(j)) && isScramble(s1.substring(i), s2.substring(0, j))) {
+                
+                map.put(s1 + s2, true);
+                return true;
             }
         }
-
-        ump.put(key, flag);
-        return flag;
+        
+        map.put(s1 + s2, false);
+        return false;
     }
 }
