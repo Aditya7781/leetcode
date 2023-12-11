@@ -1,8 +1,10 @@
 class Solution {
     public int findSpecialInteger(int[] arr) {
+        
         int size = arr.length;
         int qtr = size / 4;
         int cnt = 1;
+
         int p = arr[0];
         for (int i = 1 ; i < arr.length ; i++) {
 
