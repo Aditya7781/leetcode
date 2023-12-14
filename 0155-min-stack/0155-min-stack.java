@@ -1,33 +1,59 @@
 class MinStack {
-    
-    Stack<Integer> stk;
-    Stack<Integer> supportingstk;
+    Stack <Long> st;
+    long me;
     public MinStack() {
-        stk = new Stack<>();
-        supportingstk = new Stack<>();
+       st = new Stack<>();
     }
     
     public void push(int val) {
-        stk.push(val);
-        if(supportingstk.size()==0 || supportingstk.peek()>=val){
-            supportingstk.push(val);
+        if(st.isEmpty())
+        { st.push((long)val);
+           me = (long)val;
+        }
+        else{
+            if((long)val >= me)
+            st.push((long)val);
+            else{
+                st.push((long)2*val - me);
+                me = (long)val;
+            }
         }
     }
     
     public void pop() {
-        int ans=stk.peek();
-        stk.pop();
-        if(supportingstk.peek()==ans){
-            supportingstk.pop();
+            if(st.isEmpty())
+            return;
+            else{
+            if(st.peek() >= me)
+            st.pop();
+            else{
+                me = 2*me - st.peek();
+                st.pop();
+            }
         }
     }
     
     public int top() {
-        return stk.peek();
+        Integer b;
+        if(st.isEmpty())
+        b = -1;
+        else{
+            //int b;
+            if(st.peek()>=me)
+            b = (int)(long)st.peek();
+            else
+            b= (int)(long)me;
+        }
+        return b;
     }
     
     public int getMin() {
-        return supportingstk.peek();
+        int x;
+        if(st.isEmpty())
+        x= -1;
+        else
+        x =(int)(long)me;
+        return x;
     }
 }
 /**
