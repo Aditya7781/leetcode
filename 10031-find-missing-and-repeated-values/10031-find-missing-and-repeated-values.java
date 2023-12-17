@@ -1,6 +1,6 @@
 class Solution {
     public int[] findMissingAndRepeatedValues(int[][] grid) {
-         HashMap<Integer,Integer> hm=new HashMap<>();
+        HashMap<Integer,Integer> hm=new HashMap<>();
         int i;
         for(i=0;i<=grid.length*grid.length;i++) hm.put(i,0);
         for(i=0;i<grid.length;i++){
