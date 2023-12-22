@@ -1,16 +1,23 @@
-public class Solution {
+class Solution {
     public int maxScore(String s) {
-        int maxScore = 0;
-        int countZerosLeft = 0;
-        int countOnesRight = (int) s.chars().filter(ch -> ch == '1').count();
+        int length = s.length();
+        int ones = 0;
+        int tmpScore = s.charAt(0) == '0' ? 1 : 0;
+        int score = tmpScore;
+        for (int i = 1; i < length - 1; i++) {
+            if (s.charAt(i) == '0') {
+                tmpScore += 1;
+            } else {
+                ones++;
+                tmpScore -= 1;
+            }
 
-
-        for (int i = 0; i < s.length() - 1; i++) {
-            countZerosLeft += s.charAt(i) == '0' ? 1 : 0;
-            countOnesRight -= s.charAt(i) == '1' ? 1 : 0;
-            maxScore = Math.max(maxScore, countZerosLeft + countOnesRight);
+            if (tmpScore > score) {
+                score = tmpScore;
+            }
         }
+        ones += (s.charAt(length - 1) == '1' ? 1 : 0);
 
-        return maxScore;
+        return ones + score;
     }
 }
