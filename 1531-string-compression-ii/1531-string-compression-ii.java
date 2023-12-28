@@ -1,42 +1,39 @@
 class Solution {
-    public int getLengthOfOptimalCompression(String s, int k) {
-        dp = new int[s.length()][k + 1];
-        Arrays.stream(dp).forEach(A -> Arrays.fill(A, kMax));
-        return compression(s, 0, k);
-    }
-
-    private static final int kMax = 101;
+    
     private int[][] dp;
-
-    private int compression(final String s, int i, int k) {
-        if (k < 0)
-            return kMax;
-        if (i == s.length() || s.length() - i <= k)
-            return 0;
-        if (dp[i][k] != kMax)
-            return dp[i][k];
-
-        int maxFreq = 0;
-        int[] count = new int[128];
-
-        for (int j = i; j < s.length(); ++j) {
-            maxFreq = Math.max(maxFreq, ++count[s.charAt(j)]);
-            dp[i][k] = Math.min(
-                dp[i][k],
-                getLength(maxFreq) + compression(s, j + 1, k - (j - i + 1 - maxFreq))
-            );
+    private char[] chars;
+    private int n;
+    
+    public int getLengthOfOptimalCompression(String s, int k) {
+        this.chars = s.toCharArray();
+        this.n = s.length();
+        this.dp = new int[n][k+1];
+        for (int[] row: dp) {
+            Arrays.fill(row, -1);
         }
-
-        return dp[i][k];
+        return dp(0, k);
     }
-
-    private int getLength(int maxFreq) {
-        if (maxFreq == 1)
-            return 1;
-        if (maxFreq < 10)
-            return 2;
-        if (maxFreq < 100)
-            return 3;
-        return 4;
+    
+    private int dp(int i, int k) {
+        if (k < 0) return n;
+        if (n <= i + k) return 0;
+        
+        int result = dp[i][k];
+        if (result != -1) return result; 
+        result = dp(i + 1, k - 1);
+        int length = 0, same = 0, diff = 0;
+        
+        for (int j=i; j < n && diff <= k; j++) {
+            
+            if (chars[j] == chars[i]) {
+                same++;
+                if (same <= 2 || same == 10 || same == 100) length++;
+            } else {
+                diff++; 
+            }
+            result = Math.min(result, length + dp(j + 1, k - diff)); 
+        }
+        dp[i][k] = result;
+        return result;
     }
 }
