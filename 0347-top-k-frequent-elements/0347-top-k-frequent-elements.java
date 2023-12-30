@@ -1,27 +1,44 @@
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-
-        for (int i = 0; i < nums.length; i++) {
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+        List<Integer>[] bucket = new ArrayList[nums.length + 1];
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            min = Math.min(min, num);
+            max = Math.max(max, num);
         }
-
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-
-        for (HashMap.Entry<Integer, Integer> entry : map.entrySet()) {
-            pq.offer(new int[]{entry.getKey(), entry.getValue()});
-            if (pq.size() > k) {
-                pq.poll();
+        
+        int[] counter = new int[max - min + 1];
+        for (int num : nums) {
+            counter[num - min]++;
+        }
+        
+        for (int idx = 0; idx < counter.length; idx++) {
+            if (counter[idx] > 0) {
+                int val = idx + min;
+                int freq = counter[idx];
+                if (bucket[freq] == null) {
+                    bucket[freq] = new ArrayList<Integer>();
+                }
+                bucket[freq].add(val);
             }
         }
 
-        int[] result = new int[k];
         int index = 0;
-
-        while (!pq.isEmpty()) {
-            result[index++] = pq.poll()[0];
+        int[] res = new int[k];
+        int ptr = nums.length;
+        while (index < k) {
+            if (bucket[ptr] != null) {
+                for (int val : bucket[ptr]) {
+                    res[index++] = val;
+                    if (index == k) {
+                        return res;
+                    }
+                }
+            }
+            ptr--;
         }
-
-        return result;
+        
+        return res;
     }
 }
