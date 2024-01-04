@@ -1,17 +1,23 @@
 class Solution {
-  public int minOperations(int[] nums) {
-    var map = new HashMap<Integer, Integer>();
-    var cnt = 0;
+    public int minOperations(int[] nums) {
+        Arrays.sort(nums);
 
-    for (var n : nums)
-      map.put(n, map.getOrDefault(n, 0) + 1);
+        int res = 0;
+        int s = 0;
+        while(s < nums.length){
+            int e = s;
+            
+            while(e < nums.length && nums[e] == nums[s]) {
+                e++;
+            }
+            int count = e-s;
+            if(count == 1) return -1;
+            res += count/3;
 
-    for (var val : map.values()) {
-      if (val == 1) return -1;
-      
-      cnt += val / 3;
-      if (val % 3 != 0) cnt++;
+            if(count%3 != 0) res++;
+            s=e;
+        }
+        return res;
+       
     }
-    return cnt;
-  }
 }
