@@ -1,39 +1,38 @@
 class Solution {
     public List<List<Integer>> findWinners(int[][] matches) {
-        HashSet<Integer> all=new HashSet<>();
-        HashSet<Integer> loosers=new HashSet<>();
-        HashMap<Integer,Integer> losses=new HashMap<>();
-        
-        for(int match[] : matches){
-            int w=match[0];
-            int l=match[1];
-            
-            all.add(w);
-            all.add(l);
-            loosers.add(l);
-            losses.put(l,losses.getOrDefault(l,0)+1);
+        int[] losses = new int[100001];
+
+        for (int i = 0; i < matches.length; i++) {
+            int win = matches[i][0];
+            int loss = matches[i][1];
+
+            if (losses[win] == 0) {
+                losses[win] = -1;
+            } 
+
+            if (losses[loss] == -1) {
+                losses[loss] = 1;
+            } else {
+                losses[loss]++;
+            }
         }
-        
-        List<Integer> winners=new ArrayList<>();
-        List<Integer> oneTimeLoosers=new ArrayList<>();
-        
-        for(int player:all){
-            if(!loosers.contains(player)) 
-                winners.add(player);
+
+        List<Integer> zeroLoss = new ArrayList<>();
+        List<Integer> oneLoss = new ArrayList<>();
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int i = 0; i < losses.length; i++) {
+            if (losses[i] == -1) {
+                zeroLoss.add(i);
+            } else if (losses[i] == 1) {
+                oneLoss.add(i);
+            }
         }
-        
-        for(int looser:losses.keySet()){
-            if(losses.get(looser)==1)
-                oneTimeLoosers.add(looser);
-        }
-        
-        Collections.sort(winners);
-        Collections.sort(oneTimeLoosers);
-        
-        List<List<Integer>> ans = new ArrayList<>();
-        ans.add(winners);
-        ans.add(oneTimeLoosers);
-        
-        return ans;
+
+        result.add(zeroLoss);
+        result.add(oneLoss);
+
+        return result;
     }
 }
