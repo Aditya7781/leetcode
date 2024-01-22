@@ -1,21 +1,24 @@
 class Solution {
     public int[] findErrorNums(int[] nums) {
-        int dup = -1, missing = -1;
+     int x[] = new int[nums.length+1];
+
+     for(int i:nums){
+         x[i]++;
+     }
+
+     int dup=0 , miss=0;
+
+     for(int i=1;i<x.length;i++){
+         if(x[i]==2){
+             dup=i;
+         }
+         if(x[i] ==0){
+             miss=i;
+         }
+     }
+
+return new int[]{dup,miss};
+      
         
-        for (int i = 1; i <= nums.length; i++) {
-            int count = 0;
-            for (int j = 0; j < nums.length; j++) {
-                if (nums[j] == i) {
-                    count++;
-                }
-            }
-            if (count == 2) {
-                dup = i;
-            } else if (count == 0) {
-                missing = i;
-            }
-        }
-        
-        return new int[] {dup, missing};
     }
 }
