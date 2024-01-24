@@ -1,14 +1,25 @@
 class Solution {
     public int minimumCardPickup(int[] cards) {
-        int min=Integer.MAX_VALUE;
-        HashMap<Integer,Integer> hm=new HashMap<>();
-        for(int i=0;i<cards.length;i++){
-            if(hm.containsKey(cards[i])){
-                int l=hm.get(cards[i]);
-                min=Math.min(min,i-l+1);
+        int minimumCardPickup = Integer.MAX_VALUE;
+        boolean[] seen = new boolean[1000001];
+
+        int leftIndex = 0;
+
+        for (int rightIndex = 0; rightIndex < cards.length; rightIndex++) {
+            if (seen[cards[rightIndex]]) {
+                while (cards[leftIndex] != cards[rightIndex]) {
+                    seen[cards[leftIndex]] = false;
+                    leftIndex++;
+                }
+
+                minimumCardPickup = Math.min(minimumCardPickup, rightIndex - leftIndex + 1);
+                leftIndex++;
+
+            } else {
+                seen[cards[rightIndex]] = true;
             }
-            hm.put(cards[i],i);
         }
-        return min==Integer.MAX_VALUE?-1:min;
+
+        return minimumCardPickup == Integer.MAX_VALUE ? -1 : minimumCardPickup;
     }
 }
