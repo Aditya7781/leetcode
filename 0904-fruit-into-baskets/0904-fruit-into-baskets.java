@@ -1,3 +1,4 @@
+//Pick toys problem - Sliding window
 class Solution {
     public int totalFruit(int[] fruits) {
         HashMap<Integer, Integer> mp = new HashMap<>();
