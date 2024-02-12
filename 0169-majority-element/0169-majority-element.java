@@ -1,24 +1,21 @@
-class Solution {
-    public int majorityElement(int[] nums) {
-        int candidate = 0;
-        int count = 0;
 
-        for (int num : nums) {
-            if (count == 0) {
-                candidate = num;
-                count = 1;
-            } else if (candidate == num) {
-                count++;
-            } else {
-                count--;
+
+class Solution {// Moore Voting Algorithm
+    public int majorityElement(int[] nums) {
+        int n = nums.length;
+        int votes=0;
+        int winner_candi=nums[0];
+        for(int candidates:nums){
+            if(votes==0){
+                winner_candi=candidates;
+            }
+            if(winner_candi==candidates){
+                votes++;
+            }else{
+                votes--;
             }
         }
-        count = 0;
-        for (int num : nums) {
-            if (num == candidate) {
-                count++;
-            }
-        }
-        return (count > nums.length / 2) ? candidate : -1;
+        return winner_candi;
     }
 }
+
