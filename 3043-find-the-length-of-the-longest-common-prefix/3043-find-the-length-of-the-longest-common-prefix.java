@@ -1,70 +1,53 @@
-class Node{
-    char ch;
-    boolean terminal;
-    HashMap<Character,Node> hp;
-
-    Node(char ch, boolean terminal,HashMap<Character,Node> hp){
-        this.ch = ch;
-        this.terminal = terminal;
-        this.hp = hp;
-    }
-}
-
-class Trie {
-
-    Node root;
-
-    public Trie() {
-        root = new Node('.',false,new HashMap<>());
-    }
-    
-    public void insert(String s) {
-        Node curr = root;
-        int n = s.length();
-        for(int i=0; i<n; i++){
-            HashMap<Character,Node> hp = curr.hp;
-            char ch = s.charAt(i);
-            if(hp.containsKey(ch)){
-                curr = hp.get(ch);
-            }else{
-                Node x = new Node(ch,(i==n-1)?true:false,new HashMap<>());
-                hp.put(ch,x);
-                curr = x;
-            }
-        }
-        curr.terminal = true;
-    }
-    
-    public int search(String s) {
-        Node curr = root;
-        int n = s.length();
-        int count = 0;
-        for(int i=0; i<n; i++){
-            char ch = s.charAt(i);
-            HashMap<Character,Node> hp = curr.hp;
-            if(hp.containsKey(ch)){
-                curr = hp.get(ch);
-                count++;
-            }else{
-                return count;
-            }
-        }
-        return count;
-    }
-}
-
-
 class Solution {
-    public int longestCommonPrefix(int[] arr1, int[] arr2) {
-        Trie t = new Trie();
-        for(var a : arr1){
-            t.insert(String.valueOf(a));
+    class TrieNode{
+        TrieNode[] childrens;
+        boolean end;
+        
+        TrieNode(){
+            this.childrens=new TrieNode[10];
+            end=false;
         }
-
-        int ans = 0;
-
-        for(var a : arr2){
-            ans = Math.max(ans,t.search(String.valueOf(a)));
+    }
+    
+    TrieNode root;
+    
+    void insert(String str){
+        TrieNode curr=root;
+        for(int i=0;i<str.length();i++){
+            int index=str.charAt(i)-'0';
+            if(curr.childrens[index]==null){
+                TrieNode node=new TrieNode();
+                curr.childrens[index]=node;
+                curr=curr.childrens[index];
+            }
+            else curr=curr.childrens[index];
+        }
+        curr.end=true;
+    }
+    
+    int search(String str){
+        TrieNode curr=root;
+        int lcp=0;
+        for(int i=0;i<str.length();i++){
+            int index=str.charAt(i)-'0';
+            if(curr.childrens[index]==null) break;
+            else{
+                lcp++;
+                curr=curr.childrens[index];
+            }
+        }
+        return lcp;
+    }
+    
+    public int longestCommonPrefix(int[] arr1, int[] arr2) {
+        if(arr2.length<arr1.length) return longestCommonPrefix(arr2,arr1);
+        root=new TrieNode();
+        for(int i=0;i<arr1.length;i++){
+            insert(String.valueOf(arr1[i]));
+        }
+        int ans=0;
+        for(int i=0;i<arr2.length;i++){
+            ans=Math.max(ans,search(String.valueOf(arr2[i])));
         }
         return ans;
     }
