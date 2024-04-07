@@ -1,28 +1,25 @@
 class Solution {
     public boolean checkValidString(String s) {
-        Stack<Integer>  bracketsStack = new Stack<>();
-        Stack<Integer> asteriskStack = new Stack<>();
-        char [] sArr = s.toCharArray(); 
-        for(int i=0;i<sArr.length;i++){
-            char ch = sArr[i];
-
-            if(ch == '(')
-                bracketsStack.push(i);
-            else if(ch=='*') 
-                asteriskStack.push(i);
-            else if(!bracketsStack.isEmpty())
-                bracketsStack.pop();
-            else if(!asteriskStack.isEmpty())
-                asteriskStack.pop();
-            else
+        int omin=0;
+        int omax=0;
+        for(int i=0;i<s.length();i++){
+            if(s.charAt(i)=='('){
+                omax++;
+                omin++;
+            }
+            else if(s.charAt(i)==')'){
+                omax--;
+                omin--;
+            }
+            else{
+                omax++;
+                omin--;
+            }
+            if(omax<0){
                 return false;
+            }
+            omin=Math.max(0,omin);
         }
-
-        while(!bracketsStack.isEmpty() && !asteriskStack.isEmpty() && bracketsStack.peek()<asteriskStack.peek()){
-            bracketsStack.pop();
-            asteriskStack.pop();
-        }
-
-        return bracketsStack.isEmpty();
+        return omin==0;
     }
 }
