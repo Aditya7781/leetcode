@@ -1,5 +1,6 @@
 class Solution {
 public:
+    //Maximum area of histogram is used and compared later
 int largestRectangleArea(vector<int>& heights) {
         int n= heights.size();
         vector<int> left,right;
