@@ -1,43 +1,45 @@
+import java.util.*;
+
 class Solution {
+    public void bfs(int row, int col, char[][] grid, boolean[][] vis) {
+        int n = grid.length;
+        int m = grid[0].length;
+        vis[row][col] = true;    // starting point
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{row, col});
+        while (!q.isEmpty()) {
+            int[] temp = q.poll();
+            int r = temp[0];
+            int c = temp[1];
+            // traverse in the neighbours and mark them in vis
+            for (int deltarow = -1; deltarow <= 1; deltarow++) {
+                for (int deltacol = -1; deltacol <= 1; deltacol++) {
+                    int nrow = r + deltarow;     // neighbour_row
+                    int ncol = c + deltacol;     // neighbour_col
+                    // check for out of bound cases - abs waali condition striver missed 
+                    if ((Math.abs(deltarow - deltacol) == 1) && nrow >= 0 && nrow < n && ncol >= 0 && ncol < m && 
+                            grid[nrow][ncol] == '1' && !vis[nrow][ncol]) {
+                        vis[nrow][ncol] = true;
+                        q.add(new int[]{nrow, ncol});
+                    }
+                }
+            }
+        }
+    }
+
     public int numIslands(char[][] grid) {
-        int ans=0;
-        boolean[][] visited = new boolean[grid.length][grid[0].length];
-        for(int i=0;i<grid.length;i++){
-            for(int j=0;j<grid[0].length;j++){
-                if(!visited[i][j] && grid[i][j]=='1'){
-                    bfs(grid,i,j,visited);
-                    ans++;
+        int n = grid.length;
+        int m = grid[0].length;
+        int count = 0;
+        boolean[][] vis = new boolean[n][m];
+        for (int row = 0; row < n; row++) {
+            for (int col = 0; col < m; col++) {
+                if (!vis[row][col] && grid[row][col] == '1') {
+                    count++;
+                    bfs(row, col, grid, vis);
                 }
             }
         }
-        return ans;
-    }
-    class Pair{
-        int first;
-        int second;
-        Pair(int first, int second){
-            this.first = first;
-            this.second = second;
-        }
-    }
-    void bfs(char[][] grid,int i,int j,boolean[][] visited){
-        Queue<Pair> q = new LinkedList<Pair>();
-        visited[i][j]=true;
-        q.add(new Pair(i,j));
-        int[] dx = {-1, 1, 0, 0};
-        int[] dy = {0, 0, -1, 1};
-        while(!q.isEmpty()){
-            int r = q.peek().first;
-            int c = q.peek().second;
-            q.remove();
-            for(int k=0;k<4;k++){
-                int rowNum = r + dx[k];
-                int colNum = c + dy[k];
-                if(0<=rowNum && rowNum<grid.length && colNum>=0 && colNum<grid[0].length && grid[rowNum][colNum]=='1' && visited[rowNum][colNum]==false){
-                    visited[rowNum][colNum]=true;
-                    q.add(new Pair(rowNum,colNum));
-                }
-            }
-        }
+        return count;
     }
 }
