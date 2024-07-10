@@ -1,6 +1,16 @@
 class Solution {
     public String getEncryptedString(String s, int k) {
-        k %= s.length(); 
-        return s.substring(k) + s.substring(0, k); 
+        
+        
+        
+  
+        
+        
+        int n = s.length();
+        
+        k = k % n;
+        s= s +s;
+        
+        return s.substring(k , k+n);
     }
 }
