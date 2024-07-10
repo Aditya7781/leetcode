@@ -1,10 +1,20 @@
 class Solution {
     public boolean isArraySpecial(int[] nums) {
-        boolean spec = true;
+
         int n = nums.length;
-        for(int i = 0;i < n-1; i++){
-            if((nums[i]%2==0 && nums[i+1]%2==0) || (nums[i]%2!=0 && nums[i+1]%2!=0)) spec = false;
+
+        if(n == 1){
+            return true;
         }
-        return spec;
+
+        nums[0] = nums[0]%2;
+        for(int i=1; i<n; i++){
+            int num = nums[i]%2;
+            if(num == nums[i-1]){
+                return false;
+            }
+            nums[i] = num;
+        }
+        return true; 
     }
 }
