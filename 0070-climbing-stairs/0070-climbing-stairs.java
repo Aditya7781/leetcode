@@ -1,7 +1,7 @@
 class Solution {
     public int climbStairs(int n) {
         if (n <= 1) {
-            return 1; // There's only one way to climb 0 or 1 stairs.
+            return 1;
         }
 
         int[] dp = new int[n + 1];
